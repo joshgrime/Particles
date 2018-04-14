@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Particles</title>
+
+  <script type="text/javascript" src="jq.js"></script>
+  <script type="text/javascript" src="particles.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+
+<script type="text/javascript">
+
+var level = 1;
+
+function lvl () {
+  countdown = 20;
+  $('#counter1').text('0');
+  $('#counter2').text('0');
+  $('#counter3').text('0');
+  $('#button').css('display', 'none');
+  $('#canvas').append('<div id="level">Level '+level+'</div>');
+  $('#level').animate({opacity: '1'}, 500);
+  setTimeout(function(){ $('#level').animate({opacity: '0'}, 1000); go(level); timer(level); level++;}, 2000);
+  }
+
+
+var countdown = 30;
+
+function timer (level) {
+
+  $('#timer').text(countdown);
+  if (countdown == 0) {
+    endLevel(level);
+  }
+  else {
+    setTimeout(function(){ countdown--; timer(level);}, 1000);
+  }
+
+}
+
+function endLevel(level) {
+  $('#level').text('Level '+level+' complete').animate({opacity: '1'}, 500);
+  setTimeout(function(){ $('#level').text('Level complete').animate({opacity: '0'}, 500);}, 3000);
+  setTimeout(function(){ $('#levelPanel').animate({opacity: '1'}, 500); $('#level').remove();}, 5000);
+
+var reqNum = level - 1;
+
+    var req = [
+      {str:'30%',num:30}, //level 1
+      {str:'30%',num:30}, //level 2
+      {str:'30%',num:30}, //level 3
+      {str:'30%',num:30}, //level 4
+      {str:'40%',num:40}, //level 5
+      {str:'40%',num:40}, //level 6
+      {str:'40%',num:40}, //level 7
+      {str:'40%',num:40}, //level 8
+      {str:'40%',num:40}, //level 9
+      {str:'50%',num:50}, //level 10
+      {str:'50%',num:50}, //level 11
+      {str:'50%',num:50}, //level 12
+      {str:'50%',num:50}, //level 13
+    ];
+
+    var score = function () {
+      var caught = parseInt($('#counter1').text(), 10);
+      var total = parseInt($('#counter2').text(), 10);
+      var score = Math.round((caught/total)*100);
+      if (score < req[reqNum].num) {
+        var res = 'You scored: <span style="color:red">'+score+'%</span><p />Game Over!';
+        setTimeout(function(){gameOver();}, 6000);
+        return res;
+      }
+      else {
+        var res = 'You scored: <span style="color:green">'+score+'%</span>';
+        setTimeout(function(){lvl();}, 6000);
+        return res;
+      }
+
+    }
+
+
+  setTimeout(function(){$('#levelPanel').append('<p />Required: '+req[reqNum].str+'.<p />');}, 7000);
+  setTimeout(function(){$('#levelPanel').append(score);}, 9000);
+  setTimeout(function(){$('#levelPanel').empty().animate({opacity: '0'}, 500);}, 12000);
+
+
+}
+
+function go (level) {
+
+  if (countdown == 0) {
+    return;
+  }
+
+var timings = [
+  {0:0,0:0},
+  {pr:2000, sp:12000},
+  {pr:1800, sp:11000},
+  {pr:1500, sp:10500},
+  {pr:1200, sp:10000},
+  {pr:1000, sp:9000},
+  {pr:850, sp:8000},
+  {pr:600, sp:7000},
+  {pr:500, sp:6000},
+  {pr:450, sp:5000},
+  {pr:400, sp:5000},
+  {pr:350, sp:5000},
+  {pr:300, sp:5000},
+  {pr:200, sp:5000},
+];
+
+    var time = (Math.floor(Math.random() * timings[level].pr)); //how often the particles are made (increase to slow down)
+    setTimeout(function(){particles(timings[level].sp); go(level);}, time); //how fast they move (increase to slow down)
+
+}
+
+function gameOver() {
+  level = 1;
+  $('#levelPanel').empty().animate({opacity: '0'}, 500);
+  $('#button').css('display', 'inline-block').text('Play Again!');
+  $('#score').text('0');
+}
+
+
+</script>
+
+</head>
+<body>
+
+  <div class="cover"></div>
+<div id="canvas">
+  <div id="player"></div>
+  <div id="levelPanel"></div>
+
+
+</div>
+<div class="cover"></div>
+<p />
+<div id="stuff">
+Score: <div id="score">0</div>Record: <div id="hiScore">0</div><p >
+<div class="counter">You have grabbed <div id="counter1" class="counter">0</div> out of <div id="counter2" class="counter">0</div> particles!<p></p>(Missed <div id="counter3" class="counter">0</div>)</div><p />
+<button onclick="lvl()" id="button">Play</button>
+<p />
+<div id="timer"></div>
+</div>
+</body>
+</html>
